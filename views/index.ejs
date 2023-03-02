@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.js"></script>
+    <title>Cardapio almoço</title>
+  </head>
+  <body>
+    <h1>Preencha seus dados corretamente</h1>
+
+    <form action="/cardapio" method="POST">
+      <label for="nPedido">Número do pedido:</label>
+      <input type="number" name="nPedido" id="nPedido" required />
+      <br />
+      <br />
+      <label for="nome">Nome completo:</label>
+      <input type="text" name="nome" id="nome" required />
+      <br />
+      <label for="telefone">Telefone:</label>
+      <input type="tel" name="telefone" id="telefone" required />
+      <br />
+      <label for="imagem">Imagem:</label>
+      <label for="sim">SIM:</label>
+      <input type="radio" name="imagem" id="sim" value="sim" required />
+      <label for="nao">NÃO:</label>
+      <input type="radio" name="imagem" id="nao" value="nao" required />
+      <br />
+      <label for="preferenciaDeHorario">Preferência de horário:</label>
+      <input type="time" name="hora" id="hora" required />
+      <hr />
+      <br />
+      <label for="unidades">Unidades:</label>
+      <input type="number" name="unidades" id="unidades" required />
+      <br />
+      <label for="observacoes">Observações:</label>
+      <textarea
+        name="observacoes"
+        id="observacoes"
+        cols="30"
+        rows="10"
+      ></textarea>
+      <br />
+      <label for="bebida">Bebida:</label>
+      <select name="bebida" id="bebida" required>
+        <option value="nenhuma">Nenhuma</option>
+        <option value="Coca-cola">Coca-cola</option>
+        <option value="Guaraná">Guaraná</option>
+        <option value="Suco">Suco</option>
+      </select>
+      <br />
+
+      <p>Valor total: <span id="valorTotal"></span></p>
+      <input type="submit" value="Enviar" />
+    </form>
+
+    <script>
+      const socket = io("http://localhost:8000");
+      const valorDoAlmoco = 10;
+      const valorDaBebida = 5;
+
+      const unidades = document.querySelector("#unidades");
+      const bebida = document.querySelector("#bebida");
+      const valorTotal = document.querySelector("#valorTotal");
+
+      unidades.addEventListener("change", () => {
+        const valorTotalDoAlmoco = unidades.value * valorDoAlmoco;
+        valorTotal.innerHTML = `R$ ${valorTotalDoAlmoco}`;
+      });
+
+      bebida.addEventListener("change", () => {
+        const valorTotalDoAlmoco = unidades.value * valorDoAlmoco;
+        const valorTotalDaBebida =
+          bebida.value === "nenhuma" ? 0 : valorDaBebida;
+        const valorTotalDoPedido = valorTotalDoAlmoco + valorTotalDaBebida;
+        valorTotal.innerHTML = `R$ ${valorTotalDoPedido}`;
+      });
+
+      const form = document.querySelector("form");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = {
+          nome: form.nome.value,
+          telefone: form.telefone.value,
+          imagem: form.imagem.value,
+          hora: form.hora.value,
+          unidades: form.unidades.value,
+          observacoes: form.observacoes.value,
+          bebida: form.bebida.value,
+          valorTotal: valorTotal.innerHTML,
+          nPedido: form.nPedido.value,
+        };
+        socket.emit("novo-pedido", data);
+      });
+    </script>
+  </body>
+</html>

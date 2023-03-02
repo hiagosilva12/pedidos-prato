@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.js"></script>
+    <title>Ver pedidos</title>
+  </head>
+  <body>
+    <h1>Ver pedidos</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Número do pedido</th>
+          <th>Nome</th>
+          <th>Telefone</th>
+          <th>Imagem</th>
+          <th>Preferência de horário</th>
+          <th>Unidades</th>
+          <th>Observações</th>
+          <th>Bebida</th>
+          <th>Valor total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script type="text/javascript">
+      const socket = io("http://localhost:8000");
+
+      socket.on("pedidos", (pedidos) => {
+        const tbody = document.querySelector("tbody");
+        tbody.innerHTML = "";
+
+        for (let i = 0; i < pedidos.length; i++) {
+          const pedido = pedidos[i];
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${pedido.nPedido}</td>
+            <td>${pedido.nome}</td>
+            <td>${pedido.telefone}</td>
+            <td>${pedido.imagem}</td>
+            <td>${pedido.hora}</td>
+            <td>${pedido.unidades}</td>
+            <td>${pedido.observacoes}</td>
+            <td>${pedido.bebida}</td>
+            <td>${pedido.valorTotal}</td>`;
+          tbody.appendChild(tr);
+        }
+      });
+    </script>
+  </body>
+</html>
