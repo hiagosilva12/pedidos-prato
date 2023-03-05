@@ -163,3 +163,18 @@ io.on("connection", async (socket, req) => {
 http.listen(8000, () => {
   console.log("server is running...a");
 });
+
+// fetch("/cardapio", {
+//   method: "POST",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   body: JSON.stringify(data),
+// }).then((res) => {
+//   if (res.status === 201) {
+//     alert("Pedido enviado com sucesso!");
+//     form.reset();
+//   } else {
+//     alert("Erro ao enviar pedido!");
+//   }
+// });
