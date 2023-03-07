@@ -28,7 +28,7 @@
     </table>
 
     <script type="text/javascript">
-      const socket = io("http://localhost:8000");
+      const socket = io("https://pedidos-prato-production.up.railway.app");
 
       socket.on("pedidos", (pedidos) => {
         const tbody = document.querySelector("tbody");
